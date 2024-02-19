@@ -236,26 +236,6 @@ Lib.CheckWater = function(mo)
 	S_StartSound(mo, sfx_splish) -- And make a sound!
 end
 
-Lib.Jump4Air = function(player, cmd)
-	if not valid(player) then return end
-	local p = player
-	if not valid(p.mo) then return end
-	local mo = p.mo
-	
-	local jumping = (p.pflags & PF_JUMPDOWN)
-	local onground = P_IsObjectOnGround(mo)
-	local momz = P_MobjFlip(mo)*mo.momz
-	
-	cmd.forwardmove = 0 -- Don't bother moving
-	
-	-- Use your ability, whatever it is, at full jump height.
-	if not onground and not jumping and (momz <= 0) then
-		cmd.buttons = $ | BT_JUMP
-	elseif onground or (jumping and (momz > 0)) then
-		cmd.buttons = $ | BT_JUMP
-	end
-end
-
 -- Add a new entry to the bot's don't target list.
 -- Is this how you do a linked list?
 Lib.botDontTarget = function(mo, bot)

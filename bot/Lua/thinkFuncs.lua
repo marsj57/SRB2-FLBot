@@ -3,6 +3,62 @@
 
 local Lib = FLBotLib
 
+Lib.Jump4Air = function(player, cmd)
+	if not valid(player) then return end
+	local p = player
+	if not valid(p.mo) then return end
+	local mo = p.mo
+	
+	local jumping = (p.pflags & PF_JUMPDOWN)
+	local onground = P_IsObjectOnGround(mo)
+	local momz = P_MobjFlip(mo)*mo.momz
+	
+	cmd.forwardmove = 0 -- Don't bother moving
+	
+	-- Use your ability, whatever it is, at full jump height.
+	if not onground and not jumping and (momz <= 0) then
+		cmd.buttons = $ | BT_JUMP
+	elseif onground or (jumping and (momz > 0)) then
+		cmd.buttons = $ | BT_JUMP
+	end
+end
+
+Lib.BotWander = function(player, cmd)
+	if not valid(player) then return end
+	local p = player
+	if not valid(p.mo) then return end
+	local mo = p.mo
+
+	local jumping = (p.pflags & PF_JUMPDOWN)
+	local onground = P_IsObjectOnGround(mo)
+	local momz = P_MobjFlip(mo)*mo.momz
+	
+	-- Random interval turning
+	if P_RandomChance(FRACUNIT/16) then
+		if P_RandomChance(FRACUNIT/2) then
+			cmd.angleturn = ($ - 2560) -- Turn right!
+		else
+			cmd.angleturn = ($ + 2560) -- Turn left!
+		end
+	end
+	mo.angle = $ + (cmd.angleturn<<FRACBITS)
+	cmd.angleturn = (mo.angle>>FRACBITS)
+	cmd.forwardmove = 50 -- Go full speed. Always
+	
+	-- Ability specific stuff
+	if (p.charability == CA_THOK)
+	or (p.charability == CA_HOMINGTHOK) then
+		-- Use your ability, whatever it is, at full jump height.
+		if not onground and not jumping and (momz <= 0) then
+			cmd.buttons = $ | BT_JUMP
+		elseif onground or (jumping and (momz > 0)) then
+			cmd.buttons = $ | BT_JUMP
+		end
+	elseif (p.charability == CA_FLY)
+		
+	end
+end
+
 -- MatchThink: Thinker for the match gametype!
 -- Flame
 Lib.MatchThink = function(player, cmd)
