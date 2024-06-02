@@ -40,11 +40,13 @@ Lib.createWaypoint = function(x, y, z, spring)
 		sprintpoint = spring,
 		next = waypoints
 	}
+	if FLBotDebug then
 	-- Visual
 	local t = P_SpawnMobj(x,y,z,MT_THOK)
-	t.tics = -1
+	t.tics = 5*TICRATE
 	t.fuse = t.tics
 	t.color = P_RandomKey(#skincolors)
+	end
 end
 
 Lib.updateWaypoints = function()
